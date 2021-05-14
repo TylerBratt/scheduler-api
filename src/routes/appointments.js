@@ -33,7 +33,7 @@ module.exports = (db, updateAppointment) => {
     }
 
     const { student, interviewer } = request.body.interview;
-
+    console.log('here', student, interviewer, Number(request.params.id))
     db.query(
       `
       INSERT INTO interviews (student, interviewer_id, appointment_id) VALUES ($1::text, $2::integer, $3::integer)
@@ -41,6 +41,7 @@ module.exports = (db, updateAppointment) => {
       UPDATE SET student = $1::text, interviewer_id = $2::integer
     `,
       [student, interviewer, Number(request.params.id)]
+
     )
       .then(() => {
         setTimeout(() => {
