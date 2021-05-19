@@ -17,12 +17,7 @@ module.exports = (db, updateAppointment) => {
       ORDER BY appointments.id
     `
     ).then(({ rows: appointments }) => {
-      response.json(
-        appointments.reduce(
-          (previous, current) => ({ ...previous, [current.id]: current }),
-          {}
-        )
-      );
+      response.json(appointments.reduce((previous, current) => ({ ...previous, [current.id]: current }), {}));
     });
   });
 
@@ -33,7 +28,7 @@ module.exports = (db, updateAppointment) => {
     }
 
     const { student, interviewer } = request.body.interview;
-    console.log('here', student, interviewer, Number(request.params.id))
+    console.log("here", student, interviewer, Number(request.params.id));
     db.query(
       `
       INSERT INTO interviews (student, interviewer_id, appointment_id) VALUES ($1::text, $2::integer, $3::integer)
@@ -41,7 +36,6 @@ module.exports = (db, updateAppointment) => {
       UPDATE SET student = $1::text, interviewer_id = $2::integer
     `,
       [student, interviewer, Number(request.params.id)]
-
     )
       .then(() => {
         setTimeout(() => {
@@ -49,7 +43,7 @@ module.exports = (db, updateAppointment) => {
           updateAppointment(Number(request.params.id), request.body.interview);
         }, 1000);
       })
-      .catch(error => console.log(error));
+      .catch((error) => console.log(error));
   });
 
   router.delete("/appointments/:id", (request, response) => {
@@ -58,9 +52,7 @@ module.exports = (db, updateAppointment) => {
       return;
     }
 
-    db.query(`DELETE FROM interviews WHERE appointment_id = $1::integer`, [
-      request.params.id
-    ]).then(() => {
+    db.query(`DELETE FROM interviews WHERE appointment_id = $1::integer`, [request.params.id]).then(() => {
       setTimeout(() => {
         response.status(204).json({});
         updateAppointment(Number(request.params.id), null);
